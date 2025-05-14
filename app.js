@@ -4,7 +4,7 @@ const app = express()
 const {connectDB} = require("./connectDB/db")
 const PORT = process.env.PORT
 
-const authRoutes = require("./controllers/auth")
+const authRoutes = require("./Controllers/auth")
 const bitRoutes = require("./app/bit-by-bit")
 const sessionValidation = require("./middleware/session")
 
