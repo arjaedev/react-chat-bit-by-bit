@@ -1,4 +1,4 @@
-const { mongoose }  = require("../db")
+const { mongoose }  = require("../services,logError");
 
 const Log = new mongoose.Schema(
     {
