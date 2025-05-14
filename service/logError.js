@@ -1,4 +1,4 @@
-const log = require('../logs/log');
+const log = require('../f-logs/log');
 
 const logError = async (err) => {
     try {
@@ -14,3 +14,4 @@ const logError = async (err) => {
 };
 
 module.exports = logError;
+

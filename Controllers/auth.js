@@ -1,10 +1,14 @@
 const router = require('express').Router();
-const user = require('../modules/user');
 const bcryptjs = require('bcryptjs');
+const logError = require('../service/logError');
+const user = require('../modules/user');
+const SALT = Number(process.env.SALT);
+
+const JWT_SECRET = process.env.JWT_SECRET;
+const jwt = require('jsonwebtoken');
 
 
-
-Router.post('/user', async (req, res) => {
+router.post('/user', async (req, res) => {
     try {
         const {firstName, lastName, email, password} = req.body;
         console.log(firstName, lastName, email, password);
@@ -33,7 +37,7 @@ Router.post('/user', async (req, res) => {
 }
 );
 
-Router.post('/login', async (req, res) => {
+router.post('/login', async (req, res) => {
     try{
         const {email, password} = req.body;
         let foundUser = await User.find({email});

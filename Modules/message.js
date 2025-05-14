@@ -1,3 +1,5 @@
+const { mongoose }  = require("../connectDB/db")
+
 const message = new mongoose.Schema(
     {
         when: {

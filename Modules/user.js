@@ -1,7 +1,8 @@
+const { mongoose }  = require("../connectDB/db")
+
 const User = new mongoose.Schema(
     {
         firstName: {
-            // Validators
             type: String,
             required: true,
             max: 100,

@@ -1,7 +1,8 @@
+const { mongoose }  = require("../connectDB/db")
+
 const room = new mongoose.Schema(
     {
         name: {
-            // Validators
             type: String,
             required: true,
             max: 100,

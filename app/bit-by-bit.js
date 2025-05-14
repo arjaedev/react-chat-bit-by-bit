@@ -1,6 +1,6 @@
 const router = require('express').Router();
-const logError= require('.../service/logError');
-const Room = require('../models/room');
+const logError= require('../service/logError');
+const Room = require('../modules/room');
 
 
 router.get('/rooms', async (req, res) => {
