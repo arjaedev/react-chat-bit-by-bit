@@ -12,4 +12,4 @@ const checkError = new mongoose.Schema(
     { timestamps: true }
 )
 
-module.exports = mongoose.model("checkErr", checkError)
+module.exports = mongoose.model("newError", checkError)
