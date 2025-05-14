@@ -1,12 +1,12 @@
 require("dotenv").config()
 const express = require("express")
 const app = express()
-const {connectDB} = require("../connectDB/db")
+const {connectDB} = require("./connectDB/db")
 const PORT = process.env.PORT
 
-const authRoutes = require("../Controllers/auth")
-const bitRoutes = require("../app/bit-by-bit")
-const sessionValidation = require("../middleware/session")
+const authRoutes = require("./Controllers/auth")
+const bitRoutes = require("./Controllers/bit-by-bit")
+const sessionValidation = require("./middleware/session")
 
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
