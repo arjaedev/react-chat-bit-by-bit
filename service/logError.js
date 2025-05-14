@@ -4,7 +4,7 @@ const logError = async (err) => {
     try {
         const currentDateTime = new Date();
 
-        await Log.create({
+        await log.create({
             message: `${currentDateTime} - ${err.message}`,
             stack: err.stack
         });

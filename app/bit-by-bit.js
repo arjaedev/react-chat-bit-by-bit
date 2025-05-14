@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const logError= require('../service/logError');
-const Room = require('../modules/room');
+const Room = require('../Modules/room');
 
 
 router.get('/rooms', async (req, res) => {
@@ -16,12 +16,13 @@ router.get('/rooms', async (req, res) => {
 
 router.post('/rooms', async (req, res) => {
     try {
-        const { roomName, roomType } = req.body;
-        console.log(roomName, roomType);
+        const { roomName, description,addedUsers } = req.body;
+        console.log(roomName, description, addedUsers);
 
         const room = new Room({
             roomName,
-            roomType
+            description,
+            addedUsers
         });
 
         await room.save();
@@ -37,3 +38,5 @@ router.post('/rooms', async (req, res) => {
 });
 
 module.exports = router;
+
+

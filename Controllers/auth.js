@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const bcryptjs = require('bcryptjs');
 const logError = require('../service/logError');
-const user = require('../modules/user');
+const user = require('../Modules/user');
 const SALT = Number(process.env.SALT);
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -13,14 +13,14 @@ router.post('/user', async (req, res) => {
         const {firstName, lastName, email, password} = req.body;
         console.log(firstName, lastName, email, password);
 
-        const user = new User({
+        const newUser = new user({
             firstName,
             lastName,
             email,
             password: bcryptjs.hashSync(password, SALT)
         });
 
-        await user.save();
+        await newUser.save();
         const token = jwt.sign({id: newUser._id}, JWT_SECRET, {expiresIn: '1h'});
         console.log(token);
 
@@ -32,6 +32,7 @@ router.post('/user', async (req, res) => {
 
     } catch (error) {
         logError(error);
+        console.error(error);
         res.status(500).json({message: 'Internal server error'});
     }
 }
@@ -59,6 +60,7 @@ router.post('/login', async (req, res) => {
 
     }    catch (error) {
         logError(error);
+        console.error(error);
         res.status(500).json({message: 'Internal server error'});
     }
 }

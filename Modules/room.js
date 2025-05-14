@@ -2,7 +2,7 @@ const { mongoose }  = require("../connectDB/db")
 
 const room = new mongoose.Schema(
     {
-        name: {
+        roomName: {
             type: String,
             required: true,
             max: 100,
