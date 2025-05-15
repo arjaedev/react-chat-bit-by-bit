@@ -1,4 +1,4 @@
-const { mongoose }  = require("../connectDB/db")
+const { mongoose }  = require("../config/db")
 
 const User = new mongoose.Schema(
     {

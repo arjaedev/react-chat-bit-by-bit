@@ -1,4 +1,4 @@
-const { mongoose }  = require("../connectDB/db")
+const { mongoose }  = require("../config/db")
 
 const room = new mongoose.Schema(
     {
@@ -13,7 +13,7 @@ const room = new mongoose.Schema(
             unique: true,
         },
         addedUsers: {
-            type: String,
+            type: String,   // ! Not supposed to be a string?
             required: true,
         }
     }

@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const bcryptjs = require('bcryptjs');
 const logError = require('../service/logError');
-const user = require('../Modules/user');
+const user = require('../models/User');
 const SALT = Number(process.env.SALT);
 
 const JWT_SECRET = process.env.JWT_SECRET;
