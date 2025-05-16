@@ -1,44 +1,34 @@
 const jwt = require('jsonwebtoken');
 const user = require('../models/User');
 
-
-
-
 const JWT_SECRET = process.env.JWT_SECRET;
 
-
 const sessionValidation = async (req, res, next) => {
-    try{
+    console.log("sessionValidation successful");
 
-        console.log("sessionValidation");
-        if (req.method === "OPTIONS") next();
+    try {
+        if (req.method === "POST") return next();
 
-        if (!req.headers.authorization) throw new Error("Forbidden");
+        const authHeader = req.headers.authorization;
+        console.log("Authorization Header:", authHeader);
 
-        const authToken = req.headers.authorization.includes("Bearer")
-            ? req.headers.authorization.split(" ")[1]
-            : req.headers.authorization;
+        if (!authHeader) throw new Error("Forbidden");
 
+        const authToken = authHeader.startsWith("Bearer ")
+            ? authHeader.split(" ")[1]
+            : authHeader;
 
-        const payload= jwt.verify(authToken, JWT_SECRET)
-
+        const payload = jwt.verify(authToken, JWT_SECRET);
         const foundUser = await user.findById(payload.id);
 
         if (!foundUser) throw new Error("User not found");
 
-        req.user = { _id: foundUser._id, fullName: foundUser.fullName}
         next();
-        console.log(req.headers.authorization);
-    
+    } catch (err) {
+        console.error("Auth error:", err);
+        res.status(401).json({ error: "Unauthorized" });
     }
 
-    catch(err){
-        console.log(err);
-        res.status(500).json({
-            error: `${err}`
-        })
-    }
-    console.log("sessionValidation");
-}
-
-module.exports = sessionValidation
+};
+  
+module.exports = sessionValidation;
