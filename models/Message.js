@@ -1,6 +1,6 @@
-const { mongoose }  = require("../config/db")
+const { mongoose } = require("../config/db")
 
-const message = new mongoose.Schema(
+const Message = new mongoose.Schema(
     {
         when: {
             type: Date,
@@ -24,4 +24,4 @@ const message = new mongoose.Schema(
     { timestamps: true }
 )
 
-module.exports = mongoose.model("message", message)
+module.exports = mongoose.model("message", Message)

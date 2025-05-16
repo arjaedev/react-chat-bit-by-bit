@@ -1,6 +1,6 @@
-const { mongoose }  = require("../config/db")
+const { mongoose } = require("../config/db")
 
-const room = new mongoose.Schema(
+const Room = new mongoose.Schema(
     {
         roomName: {
             type: String,
@@ -21,4 +21,4 @@ const room = new mongoose.Schema(
 )
 
 
-module.exports = mongoose.model("room", room)
+module.exports = mongoose.model("room", Room)

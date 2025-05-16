@@ -1,6 +1,6 @@
-const { mongoose }  = require("../config/db")
+const { mongoose } = require("../config/db")
 
-const User = new mongoose.Schema(
+const User= new mongoose.Schema(
     {
         firstName: {
             type: String,
