@@ -13,7 +13,7 @@ const room = new mongoose.Schema(
             unique: true,
         },
         addedUsers: {
-            type: String,   // ! Not supposed to be a string?
+            type: Array,   // ! Type should bean Array
             required: true,
         }
     }
