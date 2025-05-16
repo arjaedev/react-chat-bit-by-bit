@@ -1,5 +1,4 @@
 const router = require('express').Router();
-const logError= require('../service/logError');
 const Room = require('../models/Room');
 
 
@@ -32,7 +31,6 @@ router.post('/rooms', async (req, res) => {
             });
     }
     catch (error) {
-        logError(error);
         res.status(500).json({ message: 'Internal server error' });
     }
 });
