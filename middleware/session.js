@@ -7,7 +7,8 @@ const sessionValidation = async (req, res, next) => {
     console.log("sessionValidation successful");
 
     try {
-        if (req.method === "POST") return next();
+        if (req.method === "POST", "GET", "PUT", "DELETE") return next();
+        
 
         const authHeader = req.headers.authorization;
         console.log("Authorization Header:", authHeader);

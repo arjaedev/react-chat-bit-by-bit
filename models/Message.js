@@ -7,12 +7,12 @@ const Message = new mongoose.Schema(
             default: Date.now,
         },
         user: {
-            type: Array,   // ! Not supposed to be a string?
+            type: Array,
             max: 50,
             required: true,
         },
         room: {
-            type: String,   // ! Not supposed to be a string?
+            type: String,
             max: 50,
         },
         body: {

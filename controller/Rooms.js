@@ -15,7 +15,6 @@ router.get('/rooms', async (req, res) => {
     }
 });
 
-
 router.post('/room', async (req, res) => {
     try {
         const { roomName, description, addedUsers } = req.body;
