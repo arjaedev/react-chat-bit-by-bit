@@ -47,6 +47,59 @@ router.post('/room', async (req, res) => {
     }
 });
 
+
+router.put('/room/:id', async (req, res) => {
+    try {
+        const { roomName, description } = req.body;
+        const { id } = req.params;
+
+        const updatedRoom = await Room.findByIdAndUpdate(
+            id,
+            { roomName, description },
+            { new: true }
+        );
+
+        if (!updatedRoom) throw new Error('updatedMessage not found');
+
+        const token = jwt.sign(
+            { id: Room._id },
+            JWT_SECRET,
+            { expiresIn: '1h' }
+        );
+
+        res.status(200).json({
+            updatedRoom,
+            token
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+router.delete('/room/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        const deletedRoom = await Room.findByIdAndDelete(req.params.id);
+        
+
+        if (!deletedRoom) {
+            return res.status(404).json({ message: 'Room not found' });
+        }
+
+        res.status(200).json({ message: 'Room deleted successfully' });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+
+
+
 module.exports = router;
 
 

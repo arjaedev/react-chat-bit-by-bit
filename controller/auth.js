@@ -7,16 +7,29 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const jwt = require('jsonwebtoken');
 
 
+
+router.get('/users', async (req, res) => {
+    try {
+        const allUser = await user.find();
+        res.status(200).json(allUser);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
 router.post('/user', async (req, res) => {
     try {
-        const {firstName, lastName, email, password} = req.body;
-        console.log(firstName, lastName, email, password);
+        const {firstName, lastName, email, password, isAdmin} = req.body;
+        console.log(firstName, lastName, email, password, isAdmin);
 
         const newUser = new user({
             firstName,
             lastName,
             email,
-            password: bcryptjs.hashSync(password, SALT)
+            password: bcryptjs.hashSync(password, SALT),
+            isAdmin
         });
 
         await newUser.save();
@@ -62,5 +75,56 @@ router.post('/login', async (req, res) => {
     }
 }
 );
+
+router.put('/user/:id', async (req, res) => {
+    try {
+        const {firstName, lastName, email, password} = req.body;
+        const { id } = req.params;
+
+        const updatedUser = await user.findByIdAndUpdate(
+            id,
+            { firstName, lastName, email, password },
+            { new: true }
+        );
+
+        if (!updatedUser) throw new Error('updatedUser not found');
+
+        const token = jwt.sign(
+            { id: user._id },
+            JWT_SECRET,
+            { expiresIn: '1h' }
+        );
+
+        res.status(200).json({
+            updatedUser,
+            token
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+
+router.delete('/user/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        const deletedUser = await user.findByIdAndDelete(req.params.id);
+        
+
+        if (!deletedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json({ message: 'User deleted successfully' });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
 
 module.exports = router;
