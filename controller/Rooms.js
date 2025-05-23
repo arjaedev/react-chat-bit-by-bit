@@ -59,7 +59,7 @@ router.put('/room/:id', async (req, res) => {
             { new: true }
         );
 
-        if (!updatedRoom) throw new Error('updatedMessage not found');
+        if (!updatedRoom) throw new Error('updatedRoom not found');
 
         const token = jwt.sign(
             { id: Room._id },
