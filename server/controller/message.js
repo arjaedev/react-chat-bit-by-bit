@@ -5,7 +5,7 @@ const Message = require("../models/Message");
 const User = require('../models/User');
 
 
-router.get('/rooms/:id/messages', async (req, res) => {
+router.get('/messages', async (req, res) => {
     try {
         const messages = await Message.find();
         res.status(200).json(messages);
@@ -16,7 +16,7 @@ router.get('/rooms/:id/messages', async (req, res) => {
     }
 });
 
-router.post('/rooms/:id/messages', async (req, res) => {
+router.post('/messages', async (req, res) => {
     try {
         const {when, user, room, body} = req.body;
         const newMessage = new Message({
@@ -47,7 +47,7 @@ router.post('/rooms/:id/messages', async (req, res) => {
     }
 });
 
-router.put('/messages/:id', async (req, res) => {
+router.put('/:id', async (req, res) => {
     try {
         const { body } = req.body;
         const { id } = req.params;
@@ -77,15 +77,14 @@ router.put('/messages/:id', async (req, res) => {
     }
 });
 
-router.delete('/messages/:id', async (req, res) => {
+router.delete('/:id', async (req, res) => {
     try {
         const { id } = req.params;
+        console.log(id)
         
         const message = await Message.findByIdAndDelete(req.params.id);
 
-        if (!message) {
-            return res.status(404).json({ message: 'Message not found' });
-        }
+        if (!message) throw new Error(`Entry deleted`)
 
         res.status(200).json({ message: 'Message deleted successfully' });
 

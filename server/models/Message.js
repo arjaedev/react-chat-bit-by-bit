@@ -7,7 +7,7 @@ const Message = new mongoose.Schema(
             default: Date.now,
         },
         user: {
-            type: Array,
+            type: Object,
             max: 50,
             required: true,
         },

@@ -25,6 +25,7 @@ router.post('/room', async (req, res) => {
             description,
             addedUsers
         });
+        
 
         await newRoom.save();
 
@@ -48,7 +49,7 @@ router.post('/room', async (req, res) => {
 });
 
 
-router.put('/room/:id', async (req, res) => {
+router.put('/:id', async (req, res) => {
     try {
         const { roomName, description } = req.body;
         const { id } = req.params;
@@ -78,16 +79,15 @@ router.put('/room/:id', async (req, res) => {
     }
 });
 
-router.delete('/room/:id', async (req, res) => {
+router.delete('/:id', async (req, res) => {
     try {
         const { id } = req.params;
+        console.log(id)
         
         const deletedRoom = await Room.findByIdAndDelete(req.params.id);
         
 
-        if (!deletedRoom) {
-            return res.status(404).json({ message: 'Room not found' });
-        }
+        if (!deletedRoom) throw new Error(`Entry deleted`)
 
         res.status(200).json({ message: 'Room deleted successfully' });
 

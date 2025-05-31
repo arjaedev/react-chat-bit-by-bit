@@ -3,21 +3,10 @@ const bcryptjs = require('bcryptjs');
 const user = require('../models/User');
 const SALT = Number(process.env.SALT);
 
-const JWT_SECRET = process.env.JWT_SECRET;
 const jwt = require('jsonwebtoken');
+const JWT_SECRET = process.env.JWT_SECRET;
 
 
-
-router.get('/users', async (req, res) => {
-    try {
-        const allUser = await user.find();
-        res.status(200).json(allUser);
-
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
-});
 
 router.post('/user', async (req, res) => {
     try {
@@ -33,6 +22,7 @@ router.post('/user', async (req, res) => {
         });
 
         await newUser.save();
+
         const token = jwt.sign({id: newUser._id}, JWT_SECRET, {expiresIn: '1h'});
         console.log(token);
 
@@ -54,19 +44,21 @@ router.post('/login', async (req, res) => {
     try{
         const {email, password} = req.body;
         let foundUser = await user.find({email});
-        if(!foundUser.length) throw error('User not found');
 
-        const ifFound = await bcryptjs.compare(password, foundUser[0].password);
+        if (!foundUser.length) throw Error(`${email} User not found`);
+
+        const ifFound = await bcryptjs.compare(password, foundUser.password);
         console.log(ifFound);
 
-        if(!ifFound) throw error('Incorrect password');
+        if (!verifiedPwd) throw Error(`invalid password`);
 
         const token = jwt.sign({id: ifFound._id}, JWT_SECRET, {expiresIn: '1h'});
 
-        console.log(foundUser[0]._id);
+        console.log(foundUser._id);
 
         res.status(200).json({
-            message: 'Login successful'
+            message: 'Login successful',
+            token,
         });
 
     }   catch (error) {
@@ -76,7 +68,7 @@ router.post('/login', async (req, res) => {
 }
 );
 
-router.put('/user/:id', async (req, res) => {
+router.put('/:id', async (req, res) => {
     try {
         const {firstName, lastName, email, password} = req.body;
         const { id } = req.params;
@@ -107,16 +99,15 @@ router.put('/user/:id', async (req, res) => {
 });
 
 
-router.delete('/user/:id', async (req, res) => {
+router.delete('/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        
+        console.log(id)
+
         const deletedUser = await user.findByIdAndDelete(req.params.id);
         
 
-        if (!deletedUser) {
-            return res.status(404).json({ message: 'User not found' });
-        }
+        if (!deletedUser) throw new Error(`Entry deleted`)
 
         res.status(200).json({ message: 'User deleted successfully' });
 
