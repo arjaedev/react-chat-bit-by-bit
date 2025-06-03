@@ -24,8 +24,10 @@ const sessionValidation = async (req, res, next) => {
 
 
         const payload = jwt.verify(authToken, JWT_SECRET);
+        
         const foundUser = await user.findById(payload.id);
-
+        console.log (foundUser)
+        console.log(payload)
         if (!foundUser) throw new Error("User not found");
         console.log("Found User:", foundUser);
 

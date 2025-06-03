@@ -17,29 +17,20 @@ router.get('/rooms', async (req, res) => {
 
 router.post('/room', async (req, res) => {
     try {
-        const { roomName, description, addedUsers } = req.body;
-        console.log(roomName, description, addedUsers);
+        const { roomName, description,} = req.body;
+        console.log(roomName, description,);
 
         const newRoom = new Room({
             roomName,
-            description,
-            addedUsers
+            description
         });
         
 
         await newRoom.save();
 
-        const token = jwt.sign(
-            { id: newRoom._id },
-            JWT_SECRET,
-            { expiresIn: '1h' }
-        );
-        console.log(token);
-
         res.status(201).json({
             message: 'Room created successfully',
-            newRoom,
-            token
+            newRoom
         });
 
     } catch (error) {
@@ -62,15 +53,8 @@ router.put('/:id', async (req, res) => {
 
         if (!updatedRoom) throw new Error('updatedRoom not found');
 
-        const token = jwt.sign(
-            { id: Room._id },
-            JWT_SECRET,
-            { expiresIn: '1h' }
-        );
-
         res.status(200).json({
-            updatedRoom,
-            token
+            updatedRoom
         });
 
     } catch (error) {
@@ -83,11 +67,10 @@ router.delete('/:id', async (req, res) => {
     try {
         const { id } = req.params;
         console.log(id)
-        
-        const deletedRoom = await Room.findByIdAndDelete(req.params.id);
-        
 
-        if (!deletedRoom) throw new Error(`Entry deleted`)
+        const deleteRoom = await Room.findByIdAndDelete(req.params.id);
+        
+        if (!deleteRoom) throw new Error('Room not found')
 
         res.status(200).json({ message: 'Room deleted successfully' });
 

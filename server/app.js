@@ -13,9 +13,9 @@ const sessionValidation = require("./middleware/session")
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
-app.use('/auth',sessionValidation, authRoutes)
+app.use('/auth', authRoutes)
 app.use('/rooms', sessionValidation, roomRoutes)
-app.use('/messages', sessionValidation, messageRoutes)
+app.use('/message', sessionValidation, messageRoutes)
 
 
 app.use(router)

@@ -23,7 +23,7 @@ router.post('/user', async (req, res) => {
 
         await newUser.save();
 
-        const token = jwt.sign({id: newUser._id}, JWT_SECRET, {expiresIn: '1h'});
+        const token = jwt.sign({id: newUser._id}, JWT_SECRET, {expiresIn: '24h'});
         console.log(token);
 
         res.status(201).json({
@@ -47,14 +47,12 @@ router.post('/login', async (req, res) => {
 
         if (!foundUser.length) throw Error(`${email} User not found`);
 
-        const ifFound = await bcryptjs.compare(password, foundUser.password);
+        const ifFound = await bcryptjs.compare(password, foundUser[0].password);
         console.log(ifFound);
-
-        if (!verifiedPwd) throw Error(`invalid password`);
+    console.log(foundUser);
+        if (!ifFound) throw Error(`invalid password`);
 
         const token = jwt.sign({id: ifFound._id}, JWT_SECRET, {expiresIn: '1h'});
-
-        console.log(foundUser._id);
 
         res.status(200).json({
             message: 'Login successful',
@@ -75,21 +73,15 @@ router.put('/:id', async (req, res) => {
 
         const updatedUser = await user.findByIdAndUpdate(
             id,
-            { firstName, lastName, email, password },
+            { firstName, lastName, email, password: bcryptjs.hashSync(password, SALT) },
             { new: true }
         );
 
         if (!updatedUser) throw new Error('updatedUser not found');
 
-        const token = jwt.sign(
-            { id: user._id },
-            JWT_SECRET,
-            { expiresIn: '1h' }
-        );
-
         res.status(200).json({
             updatedUser,
-            token
+            
         });
 
     } catch (error) {
@@ -104,10 +96,9 @@ router.delete('/:id', async (req, res) => {
         const { id } = req.params;
         console.log(id)
 
-        const deletedUser = await user.findByIdAndDelete(req.params.id);
+        const deleteUser = await user.findByIdAndDelete(req.params.id);
         
-
-        if (!deletedUser) throw new Error(`Entry deleted`)
+        if (!deleteUser) throw new Error('User not found')
 
         res.status(200).json({ message: 'User deleted successfully' });
 
