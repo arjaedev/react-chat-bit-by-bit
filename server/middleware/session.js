@@ -15,7 +15,7 @@ const sessionValidation = async (req, res, next) => {
         console.log("AuthHeader:", authHeader ? "SET" : "NOT SET");
         
         if (!authHeader) throw new Error("Forbidden");
-        const authToken = authHeader.startsWith("Bearer ")
+        const authToken = authHeader.includes("Bearer ")
             ? authHeader.split(" ")[1]
             : authHeader;
 
@@ -27,9 +27,7 @@ const sessionValidation = async (req, res, next) => {
         
         const foundUser = await user.findById(payload.id);
         console.log (foundUser)
-        console.log(payload)
-        if (!foundUser) throw new Error("User not found");
-        console.log("Found User:", foundUser);
+        
 
         req.user = {
             _id: foundUser._id, 

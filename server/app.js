@@ -4,7 +4,7 @@ const app = express()
 const router = express.Router()
 const {connectDB} = require("./config/db")
 const cors = require("cors")
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 4000
 
 const authRoutes = require("./controller/auth")
 const roomRoutes = require("./controller/Rooms")

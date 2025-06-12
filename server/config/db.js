@@ -5,7 +5,7 @@ const dbURI = process.env.ATLAS_URL
 const connectDB = async () => {
     try {
         if (!dbURI) {
-            throw new Error('DB_URL variable is not set.');
+            throw new Error('ATLAS_URL variable is not set.');
         }
 
         mongoose.set("strictQuery", true);
