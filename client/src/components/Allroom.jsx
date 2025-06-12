@@ -1,31 +1,66 @@
 import { useState, useEffect } from 'react';
 
 export default function Allrooms({ sessionToken }) {
-  const [data, setData] = useState([]);
 
-  const fetchRooms = () => {
-    const url = "http://127.0.0.1:4000/rooms/room";
+    const [roomName, setRoomName] = useState('');
+    const [rooms, setRooms] = useState([]);
 
-    fetch(url, {
-      method: "GET",
-      headers: new Headers({
-        "Content-Type": "application/json",
-        "authorization": sessionToken
-      })
-    })
-      .then(res => res.json())
-      .then(data => setData(data))
-      .catch(err => console.log(err));
-  };
+    const fetchRooms = () => {
+        const url = "http://127.0.0.1:4000/rooms/rooms";
 
-  useEffect(() => {
-    fetchRooms();
-    console.log("Data fetched from server:", data);
-  }, []);
+        fetch(url, {
+            method: "GET",
+            headers: new Headers({
+                "Content-Type": "application/json",
+                "authorization": sessionToken
+            })
+        })       
+        .then(res => res.json())
+        .then(data => setRoomName(data))
+        .catch(err => console.log(err));
 
-  return (
-    <div>
-      <h1>All Rooms</h1>
-    </div>
-  );
+        console.log("New room added:", roomName);
+    };
+
+    useEffect(() => {
+        fetchRooms();
+        console.log("Rooms fetched from server:", roomName);
+    }, []);
+
+    const AddRooms = () => {
+        const url = "http://127.0.0.1:4000/rooms/room";
+
+        fetch(url, {
+            method: "POST",
+            body: JSON.stringify({ rooms }),
+            headers: new Headers({
+                "Content-Type": "application/json",
+                "authorization": sessionToken
+            })
+        })       
+        .then(res => res.json())
+        .then(data => setRooms(data))
+        .catch(err => console.log(err));
+
+        console.log("New room added:", AddRooms);
+    };
+
+
+    return (
+      <div>
+        <h1>ROOMS</h1>
+
+        <input 
+            type="Rooms" 
+            value={rooms} 
+            name="Rooms" 
+            id="Rooms" 
+            placeholder='Enter room name' 
+            onChange={e => setRooms(e.target.value)}
+        />
+        <button> ADD ROOM </button>
+
+      </div>
+    );
+  
 }
