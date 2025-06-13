@@ -65,15 +65,7 @@ export default function Allrooms({ sessionToken }) {
 
     return (
       <>
-      <h1>Available Rooms</h1>
-        <ul>
-          {room.map((r, index) => (
-            <li key={index}>
-              <h3>{r.roomName}</h3>
-              <p>{r.description}</p>
-            </li>
-          ))}
-        </ul> 
+       
     
         <h2>Add New Room</h2>
         <input 
