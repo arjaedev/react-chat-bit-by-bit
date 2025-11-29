@@ -41,8 +41,11 @@ function App() {
 
   return (
     <>
+      <header className="app-header">
+        <h1>React Chat Bit By Bit</h1>
+      </header>
       {handleView()}
-      {sessionToken && <button onClick={logout}>Logout</button>}
+      {sessionToken && <button onClick={logout} className="logout-btn">Logout</button>}
     </>
   )
 }
