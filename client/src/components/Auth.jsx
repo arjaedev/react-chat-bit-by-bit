@@ -42,6 +42,27 @@ export default function Auth({ updateLocalStorage }) {
 	const handleSubmit = (e) => {
 		e.preventDefault()
 
+        // Static login bypass for demo
+        if (login && email === "ethan.brooks56@example.com" && password === "123456") {
+            // Create a fake JWT token
+            // Header: {"alg":"HS256","typ":"JWT"}
+            const header = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9";
+            // Payload: {"id":"static_user_id","firstName":"Ethan","lastName":"Brooks","email":"ethan.brooks56@example.com"}
+            const payloadObj = { 
+                id: "static_user_id", 
+                firstName: "Ethan", 
+                lastName: "Brooks", 
+                email: "ethan.brooks56@example.com" 
+            };
+            const payload = btoa(JSON.stringify(payloadObj));
+            const signature = "static_signature_demo";
+            const fakeToken = `${header}.${payload}.${signature}`;
+            
+            updateLocalStorage(fakeToken);
+            setError("");
+            return;
+        }
+
 		const url = login
 			? "http://127.0.0.1:4000/auth/login"
 			: "http://127.0.0.1:4000/auth/user"
