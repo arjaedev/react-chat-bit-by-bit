@@ -63,6 +63,7 @@
   display: flex;
   gap: 1rem;
   color: var(--primary-color);
+  align-items: center;
 }
 
 .icon-btn {
@@ -76,6 +77,30 @@
   color: var(--primary-color);
   opacity: 1;
   text-shadow: 0 0 8px var(--primary-color);
+}
+
+.back-btn {
+  display: none; /* Hidden on desktop by default, or we can show it */
+}
+
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none;
+  }
+  
+  .back-btn {
+    display: block;
+    font-size: 0.8rem;
+    padding: 0.4em 0.8em;
+  }
+  
+  .message-group {
+    max-width: 85%;
+  }
+  
+  .chat-header {
+    padding: 0.5rem 1rem;
+  }
 }
 
 .messages-list {

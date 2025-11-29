@@ -161,10 +161,10 @@ export default function Messages({ sessionToken, room, setRoom, logout }) {
                 </div>
                 
                 <div className="chat-header-icons">
-                    <span className="icon-btn">🔍</span>
-                    <span className="icon-btn">❤️</span>
-                    <span className="icon-btn">🔔</span>
-                    <button onClick={() => setRoom(undefined)} style={{marginLeft: '10px', padding: '5px 10px', fontSize: '0.8rem'}}>Back</button>
+                    <span className="icon-btn desktop-only">🔍</span>
+                    <span className="icon-btn desktop-only">❤️</span>
+                    <span className="icon-btn desktop-only">🔔</span>
+                    <button className="back-btn" onClick={() => setRoom(undefined)}>Back</button>
                 </div>
             </div>
             
