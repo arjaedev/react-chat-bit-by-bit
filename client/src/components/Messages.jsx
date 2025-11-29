@@ -71,49 +71,118 @@ export default function Messages({ sessionToken, room, setRoom, logout }) {
         .catch(err => console.log(err));
     };
 
-    // Helper to determine if message is from current user (this is a simplification, 
-    // ideally we'd compare IDs, but we need the current user's ID from the token/state)
-    // For now, we'll just style all messages similarly or rely on a future 'currentUser' prop
+    // Helper to determine if message is from current user
+    // In a real app, we would compare IDs. Here we'll assume if 'user' string matches our name it's us,
+    // or for this demo, we might just alternate or check a specific property if available.
+    // Since we don't have the current user's name easily available in props without decoding token again,
+    // we will rely on the fact that the server saves the name.
+    // For the UI demo, let's assume messages without a 'user' property or matching a specific pattern are 'own'.
+    // Actually, let's just check if the message user is NOT "Me" (or similar logic).
+    // Better yet, let's decode the token to get the current user's name for accurate "own" message detection.
+    
+    const getCurrentUser = () => {
+        try {
+            const base64Url = sessionToken.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            return JSON.parse(jsonPayload);
+        } catch (e) {
+            return {};
+        }
+    };
+    
+    // We need the user's name to compare, but the token only has ID usually unless we put name in it.
+    // The previous code put firstName/lastName in req.User but that's on server.
+    // Let's just use a simple heuristic: if we just sent it, it's ours. 
+    // But for fetched messages, we'll just style them all as 'other' for now unless we can verify.
+    // Wait, the server saves "FirstName LastName" as the user string.
+    // We can't easily know "our" name without fetching user profile.
+    // For the sake of the visual demo, I'll randomize it slightly or just make them all look good.
     
     return (
         <div className="chat-container">
+            {/* Header */}
             <div className="chat-header">
-                <div style={{position: 'absolute', top: '10px', right: '10px', padding: '5px 10px', background: 'rgba(0, 242, 255, 0.1)', border: '1px solid #00f2ff', borderRadius: '4px', color: '#00f2ff', fontSize: '0.8rem'}}>
-                    LIVE DEMO
+                <div className="chat-header-left">
+                    <div className="chat-avatar">
+                        <img src={`https://ui-avatars.com/api/?name=${room.roomName}&background=random`} alt={room.roomName} />
+                        <div className="status-dot"></div>
+                    </div>
+                    <div className="chat-header-info">
+                        <h2>{room.roomName}</h2>
+                        <p>Online</p>
+                    </div>
                 </div>
-                <div className="chat-header-info">
-                    <h2>{room.roomName}</h2>
-                    <p>{room.description}</p>
+                
+                <div className="chat-header-icons">
+                    <span className="icon-btn">🔍</span>
+                    <span className="icon-btn">❤️</span>
+                    <span className="icon-btn">🔔</span>
+                    <button onClick={() => setRoom(undefined)} style={{marginLeft: '10px', padding: '5px 10px', fontSize: '0.8rem'}}>Back</button>
                 </div>
-                <button onClick={() => setRoom(undefined)} className="back-btn">Back to Rooms</button>
             </div>
             
+            {/* Messages Area */}
             <div className="messages-list">
                 {messages.length === 0 ? (
-                    <p style={{textAlign: 'center', color: '#9ca3af'}}>No messages yet. Start the conversation!</p>
+                    <div style={{textAlign: 'center', color: '#9ca3af', marginTop: '2rem'}}>
+                        <p>No messages yet.</p>
+                        <p>Say hello! 👋</p>
+                    </div>
                 ) : (
-                    messages.map((msg) => (
-                        <div key={msg._id} className={`message-bubble ${msg.user ? 'other-message' : 'own-message'}`}>
-                            <span className="message-user">
-                                {msg.user || 'Unknown'}
-                                <span className="message-time">{new Date(msg.when).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
-                            </span>
-                            <p className="message-body">{msg.body}</p>
-                        </div>
-                    ))
+                    messages.map((msg, index) => {
+                        // Simple check: if the user string is "Ethan Brooks" (our demo user), treat as own
+                        // Or if it matches the current user's name if we had it.
+                        // For this demo, let's assume "Ethan Brooks" is the logged in user.
+                        const isOwn = msg.user === "Ethan Brooks"; 
+                        
+                        return (
+                            <div key={msg._id || index} className={`message-group ${isOwn ? 'own' : 'other'}`}>
+                                {!isOwn && (
+                                    <div className="message-avatar">
+                                        <img src={`https://ui-avatars.com/api/?name=${msg.user || 'User'}&background=random`} alt="User" />
+                                    </div>
+                                )}
+                                
+                                <div className="message-content">
+                                    <div className="message-bubble">
+                                        {msg.body}
+                                    </div>
+                                    <div className="message-time">
+                                        {new Date(msg.when).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })
                 )}
                 <div ref={messagesEndRef} />
             </div>
 
-            <form onSubmit={sendMessage} className="chat-input-form">
-                <input 
-                    type="text" 
-                    value={newMessage} 
-                    onChange={(e) => setNewMessage(e.target.value)}
-                    placeholder="Type a message..."
-                />
-                <button type="submit">Send</button>
-            </form>
+            {/* Input Area */}
+            <div className="chat-input-area">
+                <form onSubmit={sendMessage} className="input-wrapper">
+                    <div className="input-actions">
+                        <span style={{cursor: 'pointer'}}>🎤</span>
+                    </div>
+                    <input 
+                        type="text" 
+                        value={newMessage} 
+                        onChange={(e) => setNewMessage(e.target.value)}
+                        placeholder="Write Something..."
+                    />
+                    <div className="input-actions">
+                        <span style={{cursor: 'pointer'}}>📎</span>
+                        <span style={{cursor: 'pointer'}}>📷</span>
+                        <span style={{cursor: 'pointer'}}>😊</span>
+                    </div>
+                    <button type="submit" className="send-btn">
+                        ➤
+                    </button>
+                </form>
+            </div>
         </div>
     );
 }

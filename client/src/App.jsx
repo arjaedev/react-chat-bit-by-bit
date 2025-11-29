@@ -33,19 +33,35 @@ function App() {
     if (!sessionToken) {
       return <Auth updateLocalStorage={updateLocalStorage} />
     }
-    if (currentRoom) {
-      return <Messages sessionToken={sessionToken} room={currentRoom} setRoom={setCurrentRoom} logout={logout} />
-    }
-    return <Allrooms sessionToken={sessionToken} setRoom={setCurrentRoom} logout={logout} />
+    
+    return (
+      <div className={`app-layout ${currentRoom ? 'chat-active' : ''}`}>
+        <div className="sidebar-container">
+          <Allrooms sessionToken={sessionToken} setRoom={setCurrentRoom} logout={logout} />
+        </div>
+        <div className="chat-area-container">
+          {currentRoom ? (
+            <Messages sessionToken={sessionToken} room={currentRoom} setRoom={setCurrentRoom} logout={logout} />
+          ) : (
+            <div className="empty-chat-placeholder">
+              <div className="empty-chat-icon">💬</div>
+              <h3>Select a chat to start messaging</h3>
+            </div>
+          )}
+        </div>
+      </div>
+    )
   }
 
   return (
     <>
       <header className="app-header">
-        <h1>React Chat Bit By Bit</h1>
+        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: '1200px', margin: '0 auto', padding: '0 1rem'}}>
+          <h1>React Chat Bit By Bit</h1>
+          {sessionToken && <button onClick={logout} className="logout-btn">Logout</button>}
+        </div>
       </header>
       {handleView()}
-      {sessionToken && <button onClick={logout} className="logout-btn">Logout</button>}
     </>
   )
 }
