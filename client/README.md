@@ -1,12 +1,35 @@
-# React + Vite
+# Cyberpunk Chat App (React + Vite)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, real-time chat application interface featuring a high-contrast **Cyberpunk / Sci-Fi theme**. Built with React and Vite, this project demonstrates advanced CSS styling, component-based architecture, and a responsive UI.
 
-Currently, two official plugins are available:
+## 🎨 Visual Style
+- **Theme:** Dark mode with Neon Cyan (`#00f3ff`) and Magenta (`#ff00ff`) accents.
+- **Typography:** Monospace / Tech-inspired fonts.
+- **Effects:** Glowing borders, glassmorphism, and grid backgrounds.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Features
+- **Interactive UI:** Dynamic message bubbles, sidebar navigation, and modal interactions.
+- **Static Demo Mode:** Pre-populated with mock users and conversations for instant preview.
+- **Responsive Design:** Adapts to different screen sizes.
+- **Authentication UI:** Custom styled Login/Signup forms.
 
-## Expanding the ESLint configuration
+## 🛠️ Tech Stack
+- **Frontend:** React.js, Vite
+- **Styling:** CSS3 (Variables, Flexbox, Grid)
+- **Deployment:** GitHub Pages
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 📦 Installation
+
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   cd client
+   npm install
+   ```
+3. Run the development server:
+   ```bash
+   npm run dev
+   ```
+
+## 🌐 Live Demo
+[View on GitHub Pages](https://arjaedev.github.io/react-chat-bit-by-bit/)
