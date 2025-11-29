@@ -6,11 +6,42 @@ export default function Messages({ sessionToken, room, setRoom, logout }) {
     const [newMessage, setNewMessage] = useState('');
     const messagesEndRef = useRef(null);
 
+    // Static messages for demo
+    const staticMessages = {
+        'David Peters': [
+            { _id: 'm1', user: 'David Peters', body: 'Hey, how is the project coming along?', when: '10:00 AM' },
+            { _id: 'm2', user: 'Me', body: 'It is going well! Just finishing up the UI.', when: '10:05 AM' },
+            { _id: 'm3', user: 'David Peters', body: 'Great, let me know when it is ready for review.', when: '10:10 AM' }
+        ],
+        'Lisa Roy': [
+            { _id: 'm4', user: 'Lisa Roy', body: 'Hi, are you Available Tomorrow?', when: 'Yesterday' }
+        ],
+        'Jamie Taylor': [
+            { _id: 'm5', user: 'Jamie Taylor', body: 'Can you send me the files?', when: 'Yesterday' },
+            { _id: 'm6', user: 'Me', body: 'Sure, sending them now.', when: 'Yesterday' },
+            { _id: 'm7', user: 'Jamie Taylor', body: 'Nice One. Will Do it tomorrow', when: 'Yesterday' }
+        ],
+        'Jason Roy': [
+            { _id: 'm8', user: 'Jason Roy', body: 'That\'s Great. I am Looking forward to it.', when: 'Monday' }
+        ],
+        'Design Team': [
+            { _id: 'm9', user: 'Alice', body: 'New icons are uploaded.', when: '9:00 AM' },
+            { _id: 'm10', user: 'Bob', body: 'Thanks Alice!', when: '9:05 AM' },
+            { _id: 'm11', user: 'Me', body: 'I will integrate them today.', when: '9:10 AM' }
+        ]
+    };
+
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
 
     const fetchMessages = () => {
+        if (room.isStatic) {
+            setMessages(staticMessages[room.roomName] || []);
+            scrollToBottom();
+            return;
+        }
+
         const url = `http://127.0.0.1:4000/message/${room.roomName}`;
 
         fetch(url, {
@@ -48,6 +79,19 @@ export default function Messages({ sessionToken, room, setRoom, logout }) {
     const sendMessage = (e) => {
         e.preventDefault();
         if (!newMessage.trim()) return;
+
+        if (room.isStatic) {
+            // For static rooms, just add to local state to simulate sending
+            const newMsg = { 
+                _id: Date.now().toString(), 
+                user: 'Me', 
+                body: newMessage, 
+                when: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) 
+            };
+            setMessages([...messages, newMsg]);
+            setNewMessage('');
+            return;
+        }
 
         const url = `http://127.0.0.1:4000/message/${room.roomName}`;
         const body = { body: newMessage };
@@ -107,7 +151,7 @@ export default function Messages({ sessionToken, room, setRoom, logout }) {
             <div className="chat-header">
                 <div className="chat-header-left">
                     <div className="chat-avatar">
-                        <img src={`https://ui-avatars.com/api/?name=${room.roomName}&background=random`} alt={room.roomName} />
+                        <img src={room.avatar || `https://ui-avatars.com/api/?name=${room.roomName}&background=random`} alt={room.roomName} />
                         <div className="status-dot"></div>
                     </div>
                     <div className="chat-header-info">
@@ -133,16 +177,14 @@ export default function Messages({ sessionToken, room, setRoom, logout }) {
                     </div>
                 ) : (
                     messages.map((msg, index) => {
-                        // Simple check: if the user string is "Ethan Brooks" (our demo user), treat as own
-                        // Or if it matches the current user's name if we had it.
-                        // For this demo, let's assume "Ethan Brooks" is the logged in user.
-                        const isOwn = msg.user === "Ethan Brooks"; 
+                        // Simple check: if the user string is "Ethan Brooks" (our demo user) or "Me", treat as own
+                        const isOwn = msg.user === "Ethan Brooks" || msg.user === "Me"; 
                         
                         return (
                             <div key={msg._id || index} className={`message-group ${isOwn ? 'own' : 'other'}`}>
                                 {!isOwn && (
                                     <div className="message-avatar">
-                                        <img src={`https://ui-avatars.com/api/?name=${msg.user || 'User'}&background=random`} alt="User" />
+                                        <img src={room.avatar || `https://ui-avatars.com/api/?name=${msg.user || 'User'}&background=random`} alt="User" />
                                     </div>
                                 )}
                                 

@@ -9,6 +9,19 @@ export default function Allrooms({ sessionToken, setRoom, logout }) {
 
     const [showModal, setShowModal] = useState(false);
 
+    // Static data for demo purposes
+    const staticRooms = [
+        { _id: 'static_1', roomName: 'David Peters', description: 'Senior Developer', type: 'direct', avatar: 'https://i.pravatar.cc/150?u=david', isStatic: true },
+        { _id: 'static_2', roomName: 'Lisa Roy', description: 'Hi, are you Available Tomorrow?', type: 'direct', avatar: 'https://i.pravatar.cc/150?u=lisa', unread: 1, isStatic: true },
+        { _id: 'static_3', roomName: 'Jamie Taylor', description: 'Nice One. Will Do it tomorrow', type: 'direct', avatar: 'https://i.pravatar.cc/150?u=jamie', unread: 3, isStatic: true },
+        { _id: 'static_4', roomName: 'Jason Roy', description: 'That\'s Great. I am Looking forward...', type: 'direct', avatar: 'https://i.pravatar.cc/150?u=jason', isStatic: true },
+        { _id: 'static_5', roomName: 'Amy Frost', description: 'Hi, will you start working on the...', type: 'direct', avatar: 'https://i.pravatar.cc/150?u=amy', isStatic: true },
+        { _id: 'static_6', roomName: 'Paul Wilson', description: 'See you tommorow champ', type: 'direct', avatar: 'https://i.pravatar.cc/150?u=paul', isStatic: true },
+        { _id: 'static_7', roomName: 'Ana Williams', description: '??', type: 'direct', avatar: 'https://i.pravatar.cc/150?u=ana', unread: 1, isStatic: true },
+        { _id: 'static_8', roomName: 'Design Team', description: 'Project updates and assets', type: 'group', avatar: 'https://ui-avatars.com/api/?name=Design+Team&background=random', isStatic: true },
+        { _id: 'static_9', roomName: 'General', description: 'General discussion', type: 'group', avatar: 'https://ui-avatars.com/api/?name=General&background=random', isStatic: true },
+    ];
+
     const fetchRooms = () => {
         const url = "http://127.0.0.1:4000/rooms/rooms";
 
@@ -28,12 +41,18 @@ export default function Allrooms({ sessionToken, setRoom, logout }) {
             return res.json();
         })
         .then(data => setRooms(data))
-        .catch(err => console.log(err));
+        .catch(err => {
+            console.log(err);
+            // If fetch fails (e.g. server down), we still have static rooms
+        });
     };
 
     useEffect(() => {
         fetchRooms();
     }, []);
+
+    // Combine static and fetched rooms
+    const displayRooms = [...staticRooms, ...rooms];
     
     const AddRooms = (e) => {
 		e.preventDefault()
@@ -80,10 +99,10 @@ export default function Allrooms({ sessionToken, setRoom, logout }) {
        </div>
        
        <ul className="rooms-list">
-        {rooms.map((r) => (
+        {displayRooms.map((r) => (
           <li key={r._id} className="room-card" onClick={() => setRoom(r)}>
             <div className="room-avatar">
-                <img src={`https://ui-avatars.com/api/?name=${r.roomName}&background=random`} alt={r.roomName} />
+                <img src={r.avatar || `https://ui-avatars.com/api/?name=${r.roomName}&background=random`} alt={r.roomName} />
             </div>
             <div className="room-info">
                 <div className="room-header">
@@ -92,6 +111,7 @@ export default function Allrooms({ sessionToken, setRoom, logout }) {
                 </div>
                 <p className="room-last-msg">{r.description}</p>
             </div>
+            {r.unread && <div className="unread-badge">{r.unread}</div>}
           </li>
         ))}
        </ul>
