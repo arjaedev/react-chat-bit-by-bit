@@ -8,17 +8,18 @@ export default function Auth({ updateLocalStorage }) {
     const [lastName, setLastName] = useState("")
 	const [email, setEmail] = useState("")
 	const [password, setPassword] = useState("")
+    const [error, setError] = useState("")
 
 	
 	const register = () => login ? null : (
         
-        <div className="register">
+        <div className="register-fields">
 			<input
 				type="text"
 				value={firstName}
 				name="firstName"
 				id="firstName"
-				placeholder='Enter first name'
+				placeholder='First Name'
 				onChange={e => setFirstName(e.target.value)}
 			/>
 			<input
@@ -26,7 +27,7 @@ export default function Auth({ updateLocalStorage }) {
 				value={lastName}
 				name="lastName"
 				id="lastName"
-				placeholder='Enter last name'
+				placeholder='Last Name'
 				onChange={e => setLastName(e.target.value)}
 			/>
 		</div>
@@ -49,50 +50,61 @@ export default function Auth({ updateLocalStorage }) {
 			? { email, password }
 			: { firstName,lastName, email, password}
 
-            fetch(url, {
-                method: "POST",
-                body: JSON.stringify(body),
-                headers: new Headers({
-                    "Content-Type": "application/json"
-                })
-            })
-            .then(res => {
-                return res.json()
-            })
-            .then(data => {
-                console.log(data)
-                updateLocalStorage(data.token)
-            })
-            .catch(err => console.log(err))
+		fetch(url, {
+			method: "POST",
+			body: JSON.stringify(body),
+			headers: new Headers({
+				"Content-Type": "application/json"
+			})
+		})
+		.then(async res => {
+            const data = await res.json();
+            if (!res.ok) {
+                throw new Error(data.message || "An error occurred");
+            }
+            return data;
+        })
+		.then(data => {
+            updateLocalStorage(data.token);
+            setError("");
+        })
+		.catch(err => {
+            console.log(err);
+            setError(err.message);
+        })
 	}
 
-
 	return (
-		<>
-            <h1 className='auth-header'>{login ? "Login" : "Register"}</h1>`
-
-			<form action="" className="form-wrapper">
-				{register()}
-                
-				<input 
-                    type="email" 
-                    value={email} 
-                    name="email" 
-                    id="email" 
-                    placeholder='Enter email' 
-                    onChange={e => setEmail(e.target.value)}
-                />
-				<input type="password" 
-                    value={password} 
-                    name="pwd" 
-                    id="pwd" 
-                    placeholder='Enter password' 
-                    onChange={e => setPassword(e.target.value)} 
-                />
-
-				<button onClick={handleSubmit}>Login</button>
-				<button onClick={toggle} type='button' className='logRegisterBtn'>{toggleBtn()}</button>
+		<div className="auth-container">
+			<h1>{login ? "Welcome Back" : "Create Account"}</h1>
+            {error && <div className="error-message" style={{color: 'red', marginBottom: '10px'}}>{error}</div>}
+			<form className="auth-form" onSubmit={handleSubmit}>
+                {register()}
+				<input
+					type="text"
+					value={email}
+					name="email"
+					id="email"
+					placeholder='Email'
+					onChange={e => setEmail(e.target.value)}
+				/>
+				<input
+					type="password"
+					value={password}
+					name="password"
+					id="password"
+					placeholder='Password'
+					onChange={e => setPassword(e.target.value)}
+				/>
+				<button type="submit">{login ? "Login" : "Sign Up"}</button>
 			</form>
-		</>
+            <button className="auth-toggle" onClick={toggle}>{toggleBtn()}</button>
+            
+            <div className="demo-info" style={{marginTop: '2rem', padding: '1rem', border: '1px solid #333', borderRadius: '4px', backgroundColor: 'rgba(0,0,0,0.5)'}}>
+                <h3 style={{margin: '0 0 0.5rem 0', color: '#00f2ff', fontSize: '1rem'}}>Live Demo Credentials</h3>
+                <p style={{margin: '0.2rem 0', color: '#ccc', fontSize: '0.9rem'}}>Email: <span style={{color: '#fff', fontFamily: 'monospace'}}>ethan.brooks56@example.com</span></p>
+                <p style={{margin: '0.2rem 0', color: '#ccc', fontSize: '0.9rem'}}>Password: <span style={{color: '#fff', fontFamily: 'monospace'}}>123456</span></p>
+            </div>
+		</div>
 	)
 }

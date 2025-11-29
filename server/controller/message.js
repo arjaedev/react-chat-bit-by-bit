@@ -83,4 +83,40 @@ router.delete('/:id', async (req, res) => {
 });
 
 
+router.get('/:room', async (req, res) => {
+    try {
+        const { room } = req.params;
+        const messages = await Message.find({ room });
+        res.status(200).json(messages);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+router.post('/:room', async (req, res) => {
+    try {
+        const { room } = req.params;
+        const { body } = req.body;
+        
+        const newMessage = new Message({
+            when: Date.now(),
+            user: `${req.User.firstName} ${req.User.lastName}`, 
+            room,
+            body
+        });
+
+        await newMessage.save();
+
+        res.status(201).json({
+            newMessage
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+
 module.exports = router;

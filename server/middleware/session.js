@@ -36,6 +36,8 @@ const sessionValidation = async (req, res, next) => {
         req.User = {
             _id: foundUser._id, 
             email: foundUser.email, 
+            firstName: foundUser.firstName,
+            lastName: foundUser.lastName,
             isAdmin: foundUser.isAdmin 
         };
 

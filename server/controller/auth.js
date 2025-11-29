@@ -34,6 +34,9 @@ router.post('/user', async (req, res) => {
 
     } catch (error) {
         console.error(error);
+        if (error.code === 11000) {
+            return res.status(409).json({ message: 'Email already in use' });
+        }
         res.status(500).json({message: 'Internal server error'});
     }
 }
@@ -51,7 +54,7 @@ router.post('/login', async (req, res) => {
     console.log(foundUser);
         if (!ifFound) throw Error(`invalid password`);
 
-        const token = jwt.sign({id: ifFound._id}, JWT_SECRET, {expiresIn: '1h'});
+        const token = jwt.sign({id: foundUser[0]._id}, JWT_SECRET, {expiresIn: '1h'});
 
         res.status(200).json({
             message: 'Login successful',
