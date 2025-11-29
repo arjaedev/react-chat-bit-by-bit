@@ -171,7 +171,7 @@ export default function Messages({ sessionToken, room, setRoom, logout }) {
             {/* Messages Area */}
             <div className="messages-list">
                 {messages.length === 0 ? (
-                    <div style={{textAlign: 'center', color: '#9ca3af', marginTop: '2rem'}}>
+                    <div style={{textAlign: 'center', color: 'var(--text-muted)', marginTop: '2rem'}}>
                         <p>No messages yet.</p>
                         <p>Say hello! 👋</p>
                     </div>
